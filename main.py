@@ -21,7 +21,7 @@ THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 HREF_RE = re.compile(r'/[a-z]+/\d+\.html')
 
 DEFAULT_QUERIES = ['toyota']
-DEFAULT_CATEGORIES = ['cta']
+DEFAULT_CATEGORIES = ['cto']
 DEFAULT_DAYS = 2
 DEFAULT_LOCALES = os.path.relpath(os.path.join(THIS_DIR, 'close_locales.json'))
 DEFAULT_OUT = os.path.relpath(os.path.join(THIS_DIR, 'results.json'))
