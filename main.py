@@ -81,8 +81,9 @@ def search(locale=None, category=None, query=None):
         except AttributeError:
             logging.warning('Could not find href: {}'.format(item_tag))
             continue
-        if not href.startswith('http://'):
-            href = 'http://{}.craigslist.org'.format(locale) + href
+        if href.startswith('http://'):
+            continue
+        href = 'http://{}.craigslist.org'.format(locale) + href
         try:
             desc = item_tag.find_all('a', href=HREF_RE)[1].text
         except (AttributeError, IndexError):
