@@ -18,10 +18,10 @@ import requests
 
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-LINK_RE = re.compile(r'/[a-z]+/\d+\.html')
+HREF_RE = re.compile(r'/[a-z]+/\d+\.html')
 
-DEFAULT_QUERIES = ('toyota',)
-DEFAULT_CATEGORIES = ('cta',)
+DEFAULT_QUERIES = ['toyota']
+DEFAULT_CATEGORIES = ['cta']
 DEFAULT_DAYS = 2
 DEFAULT_LOCALES = os.path.relpath(os.path.join(THIS_DIR, 'close_locales.json'))
 DEFAULT_OUT = os.path.relpath(os.path.join(THIS_DIR, 'results.json'))
@@ -77,14 +77,14 @@ def search(locale=None, category=None, query=None):
         except AttributeError:
             price = None
         try:
-            href = item_tag.find('a', href=LINK_RE)['href']
+            href = item_tag.find('a', href=HREF_RE)['href']
         except AttributeError:
             logging.warning('Could not find href: {}'.format(item_tag))
             continue
         if not href.startswith('http://'):
             href = 'http://{}.craigslist.org'.format(locale) + href
         try:
-            desc = item_tag.find_all('a', href=LINK_RE)[1].text
+            desc = item_tag.find_all('a', href=HREF_RE)[1].text
         except (AttributeError, IndexError):
             logging.warning('Could not find description tag: {}'.format(item_tag))
             desc = None
