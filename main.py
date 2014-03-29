@@ -111,4 +111,5 @@ if __name__ == '__main__':
         for category in args.category
         for query in args.query
     }
+    results = dict(i for i in results.items() if i[1])
     json.dump(results, args.out, indent=4)
