@@ -113,5 +113,5 @@ if __name__ == '__main__':
                                          query=query).items():
                     locale_results[href] = item
         if locale_results:
-            results[locale] = locale_results
+            results[locale] = list(locale_results.values())
     json.dump(results, args.out, indent=4)
