@@ -57,12 +57,12 @@ args = parser.parse_args()
 
 def search(locale=None, category=None, query=None):
     """
-    Returns search results as a list of dicts
+    Returns search results as a dict of dicts {href: dict}
     """
     response = requests.get('http://{}.craigslist.org/search/'.format(locale),
                             params={'query': query, 'catAbb': category})
     soup = BeautifulSoup(response.text)
-    results = []
+    results = {}
     for item_tag in soup.findAll('p'):
         date_tag = item_tag.find('span', class_='date')
         if not date_tag:
@@ -89,12 +89,12 @@ def search(locale=None, category=None, query=None):
         except (AttributeError, IndexError):
             logging.warning('Could not find description tag: {}'.format(item_tag))
             desc = None
-        results.append({
+        results[href] = {
             'date': dt.isoformat(),
             'price': price,
             'desc': desc,
             'href': href,
-        })
+        }
     print('{} matches on {}'.format(len(results), response.url))
     return results
 
@@ -103,13 +103,15 @@ if __name__ == '__main__':
         locales = json.load(args.locales)
     except ValueError:
         exit('Could not parse locales file')
-    results = {
-        '{}/{}/{}'.format(locale, category, query): search(locale=locale,
-                                                           category=category,
-                                                           query=query)
-        for locale in locales
-        for category in args.category
-        for query in args.query
-    }
-    results = dict(i for i in results.items() if i[1])
+    results = {}
+    for locale in locales:
+        locale_results = {}
+        for category in args.category:
+            for query in args.query:
+                for href, item in search(locale=locale,
+                                         category=category,
+                                         query=query).items():
+                    locale_results[href] = item
+        if locale_results:
+            results[locale] = locale_results
     json.dump(results, args.out, indent=4)
